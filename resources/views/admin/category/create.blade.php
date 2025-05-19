@@ -20,13 +20,14 @@
                                 <h5>Category Information</h5>
                             </div>
 
-                            <form id="categoryForm" name="categoryForm" method="POST" action="{{ route('category.store') }}" enctype="multipart/form-data">
+                            <form id="categoryForm" name="categoryForm" >
                                 @csrf
                                 <div class="theme-form theme-form-2 mega-form">
                                     <div class="mb-4 row align-items-center">
                                         <label class="form-label-title col-sm-3 mb-0">Category Name</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control" name="category_name" type="text" placeholder="Category Name">
+                                            <input class="form-control" name="category_name" id="category_name" type="text" placeholder="Category Name">
+                                            <p ></p>
                                         </div>
                                     </div>
 
@@ -46,7 +47,8 @@
                                     <div class="mb-4 row align-items-center">
                                         <label class="form-label-title col-sm-3 mb-0">Category Slug</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control" name="slug" type="text" placeholder="Category Slug">
+                                            <input class="form-control" id="slug" name="slug" type="text" placeholder="Category Slug">
+                                            <p ></p>
                                         </div>
                                     </div>
 
@@ -96,25 +98,46 @@
         $(document).ready(function () {
             $('#categoryForm').on('submit', function (e) {
                 e.preventDefault();
-
+                 let form = $(this)[0];
                 $.ajax({
                     url: "{{ route('category.store') }}",
                     type: "POST",
-                    data: new FormData(this),
+                    data: new FormData(form),
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        if (response.status === 'success') {
+                        $('.form-control').removeClass('is-invalid');
+                        $('.invalid-feedback').text('');
+                        if (response.status == 1) {
                             toastr.success("Category added successfully!");
+                            form.reset();
+                            $('#preview').addClass('d-none').attr('src', '#');
+                            $('#drop-text').show();
                             window.location.href = "{{ route('category.index') }}";
                         } else {
-                            toastr.error("Error adding category!");
+                            let error = response.errors;
+                            if(error['category_name']){
+                                $('#category_name').addClass('is-invalid').siblings('p').addClass('invalid-feedback').text(error['category_name']);
+                            }
+                            if(error['slug']){
+                               $('#slug').addClass('is-invalid').siblings('p').addClass('invalid-feedback').text(error['slug']);
+                            }
+                            toastr.error("Please correct the highlighted errors.");
                         }
                     },
                     error: function () {
                         toastr.error("An error occurred while adding the category!");
                     }
                 });
+            });
+            $('#categoryForm').on('reset', function (e) {
+
+                let form = $(this)[0];
+                form.reset();
+                $('.form-control').removeClass('is-invalid');
+                $('p').filter('.invalid-feedback').removeClass('invalid-feedback').text('');
+                // preview.attr('src', '#').hide();
+                // dropText.show()
             });
 
             // Drop zone handling

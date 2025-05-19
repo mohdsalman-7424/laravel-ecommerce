@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\category as ModelsCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class Category extends Controller
 {
@@ -12,7 +14,8 @@ class Category extends Controller
      */
     public function index()
     {
-        return view('admin.category.category');
+         $categories = ModelsCategory::all();
+        return view('admin.category.category', compact('categories'));
     }
 
     /**
@@ -20,6 +23,7 @@ class Category extends Controller
      */
     public function create()
     {
+
         return view('admin.category.create');
     }
 
@@ -28,7 +32,28 @@ class Category extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $validate = Validator::make($request->all(), [
+            'category_name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug',
+
+        ]);
+        if($validate->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validate->errors()
+            ]);
+        }
+        $category = new ModelsCategory();
+        $category->name = $request->category_name;
+        $category->slug = $request->slug;
+        $category->status = $request->status;
+        $category->is_menu = $request->show_in_menu;
+        $category->save();
+        session()->flash('success', 'Category created successfully');
+        return response()->json([
+            'status' => 1,
+            'message' => 'Category created successfully'
+        ]);
     }
 
     /**

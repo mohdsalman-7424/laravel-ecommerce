@@ -31,49 +31,48 @@
                                     </thead>
 
                                     <tbody>
-                                        <tr>
-                                            <td>Aata Buscuit</td>
+                                        @foreach ($categories as $category)
+                                            <tr>
+                                                <td>{{ $category->name }}</td>
+                                                <td>{{ $category->created_at->format('d-m-Y') }}</td>
 
-                                            <td>26-12-2021</td>
+                                                <td>
+                                                    <div class="table-image">
+                                                        <img src="{{ url('public/admin/assets/images/product/' . $category->image) }}"
+                                                            class="img-fluid" alt="">
+                                                    </div>
+                                                </td>
 
-                                            <td>
-                                                <div class="table-image">
-                                                    <img src="{{url('public/admin/assets/images/product/1.png')}}" class="img-fluid" alt="">
-                                                </div>
-                                            </td>
+                                                <td>
+                                                    <div class="category-icon">
+                                                        <img src="{{ url('public/admin/assets/images/icons/' . $category->icon) }}"
+                                                            class="img-fluid" alt="">
+                                                    </div>
+                                                </td>
 
-                                            <td>
-                                                <div class="category-icon">
-                                                    <img src="https://themes.pixelstrap.com/fastkart/assets/svg/1/vegetable.svg"
-                                                        class="img-fluid" alt="">
-                                                </div>
-                                            </td>
+                                                <td>{{ $category->slug }}</td>
 
-                                            <td>buscuit</td>
+                                                <td>
+                                                    <ul>
+                                                        <li>
+                                                            <a href="{{ route('category.edit', $category->id) }}">
+                                                                <i class="ri-pencil-line"></i>
+                                                            </a>
+                                                        </li>
 
-                                            <td>
-                                                <ul>
-                                                    <li>
-                                                        <a href="order-detail.html">
-                                                            <i class="ri-eye-line"></i>
-                                                        </a>
-                                                    </li>
+                                                        <li>
+                                                            <a href="javascript:void(0)" data-bs-toggle="modal"
+                                                                data-bs-target="#exampleModalToggle">
+                                                                <i class="ri-delete-bin-line"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
 
-                                                    <li>
-                                                        <a href="javascript:void(0)">
-                                                            <i class="ri-pencil-line"></i>
-                                                        </a>
-                                                    </li>
+                                        @endforeach
 
-                                                    <li>
-                                                        <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModalToggle">
-                                                            <i class="ri-delete-bin-line"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>

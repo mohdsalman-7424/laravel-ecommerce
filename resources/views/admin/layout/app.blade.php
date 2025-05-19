@@ -129,6 +129,11 @@
             };
         })
     </script>
+    @if(session('success'))
+    <script>
+        toastr.success("{{ session('success') }}");
+    </script>
+@endif
 
     @yield('script')
 </body>
